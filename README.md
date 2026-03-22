@@ -11,8 +11,10 @@ We downloaded the two datasets as .txt files, and kept them in the same folder a
 <br>
 To execute the code, open the terminal in the src folder, then run the follow command:
 <br>
+
 `chmod +x run.sh`
-<br>
+<br> 
+
 then execute the sh file to get the outputs using the following command:
 <br>
 `./run.sh`
