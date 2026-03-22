@@ -8,8 +8,10 @@ Two datasets were used for the testing, links for the datasets are as below:
 We downloaded the two datasets as .txt files, and kept them in the same folder as the cpp source code that contains the brandes algorithm, named daa.cpp.
 
 To execute the code, open the terminal in the src folder, then run the follow command:
-chmod +x run.sh
+<br>
+`chmod +x run.sh`
 <br>
 then execute the sh file to get the outputs using the following command:
-./run.sh
+<br>
+`./run.sh`
 
