@@ -20,4 +20,6 @@ then execute the sh file to get the outputs using the following command:
 `./run.sh`
 
 <br>
-The outputs will be visible in the new txt files created in the same folder, namely **output_wiki.txt** for *wiki vote dataset*, and **output_enron.txt** for *email enron dataset* respectively
+The outputs will be visible in the new txt files created in the same folder, namely 
+
+**output_wiki.txt** for *wiki vote dataset*, and **output_enron.txt** for *email enron dataset* respectively
