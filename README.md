@@ -7,6 +7,8 @@ Two datasets were used for the testing, links for the datasets are as below:
 <br>
 We downloaded the two datasets as .txt files, and kept them in the same folder as the cpp source code that contains the brandes algorithm, named main.cpp.
 <br>
+
+<br>
 To execute the code, open the terminal in the src folder, then run the follow command:
 <br>
 `chmod +x run.sh`
