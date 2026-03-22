@@ -19,7 +19,7 @@ Structure betweennessCentrality(int n, vector<vector<int>> &adj, bool undirected
 
     for (int s = 0; s < n; s++)
     {
-        cout << s << endl;
+        // cout << s << endl;
 
         sigma[s] = 1;
         dist[s] = 0;
