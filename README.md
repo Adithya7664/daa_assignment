@@ -19,3 +19,5 @@ then execute the sh file to get the outputs using the following command:
 <br>
 `./run.sh`
 
+<br>
+The outputs will be visible in the new txt files created in the same folder
