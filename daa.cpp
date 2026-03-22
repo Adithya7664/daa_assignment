@@ -3,36 +3,29 @@
 #include <queue>
 #include <stack>
 #include <fstream>
+#include <sstream>
 #include <unordered_map>
 #include <algorithm>
 #include <chrono>
 
 using namespace std;
 
-struct Result {
+struct Structure {
     vector<double> BC;
     double time;
-    size_t approx_mem;
+    size_t size;
 };
 
-Result brandes(int n, vector<vector<int>> &adj) {
-
+Structure betweennessCentrality(int n, vector<vector<int>> &adj) {
     vector<double> CB(n, 0.0);
-    vector<vector<int>> P(n);
-    vector<int> sigma(n);
-    vector<int> dist(n);
-    vector<double> delta(n);
 
     auto start = chrono::high_resolution_clock::now();
 
     for (int s = 0; s < n; s++) {
-
         stack<int> S;
-
-        for (int i = 0; i < n; i++) P[i].clear();
-        fill(sigma.begin(), sigma.end(), 0);
-        fill(dist.begin(), dist.end(), -1);
-        fill(delta.begin(), delta.end(), 0.0);
+        vector<vector<int>> P(n);
+        vector<int> sigma(n, 0);
+        vector<int> dist(n, -1);
 
         sigma[s] = 1;
         dist[s] = 0;
@@ -40,8 +33,10 @@ Result brandes(int n, vector<vector<int>> &adj) {
         queue<int> Q;
         Q.push(s);
 
+        // BFS
         while (!Q.empty()) {
-            int v = Q.front(); Q.pop();
+            int v = Q.front();
+            Q.pop();
             S.push(v);
 
             for (int w : adj[v]) {
@@ -55,9 +50,13 @@ Result brandes(int n, vector<vector<int>> &adj) {
                 }
             }
         }
-        
+
+        vector<double> delta(n, 0.0);
+
+        // Back-propagation
         while (!S.empty()) {
-            int w = S.top(); S.pop();
+            int w = S.top();
+            S.pop();
 
             for (int v : P[w]) {
                 delta[v] += ((double)sigma[v] / sigma[w]) * (1.0 + delta[w]);
@@ -69,18 +68,24 @@ Result brandes(int n, vector<vector<int>> &adj) {
         }
     }
 
-    for (int i = 0; i < n; i++) CB[i] /= 2.0;
+    // divide by 2 for undirected graph
+    for (int i = 0; i < n; i++) {
+        CB[i] /= 2.0;
+    }
 
     auto end = chrono::high_resolution_clock::now();
-    double exec_time = chrono::duration<double>(end - start).count();
+    double execT = chrono::duration<double>(end - start).count();
 
-    size_t mem = 0;
-    for (auto &v : adj) mem += v.size() * sizeof(int);
-    mem += n * sizeof(int) * 2;
-    mem += n * sizeof(double) * 2;
+    size_t total_memory = 0;
+    for (auto &v : adj) {
+        total_memory += v.size() * sizeof(int);
+    }
+    total_memory += n * sizeof(int) * 2;
+    total_memory += n * sizeof(double) * 2;
 
-    return {CB, exec_time, mem};
+    return {CB, execT, total_memory};
 }
+
 int main(int argc, char *argv[]) {
 
     ios::sync_with_stdio(false);
@@ -97,57 +102,69 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    unordered_map<int,int> idMap;
+    unordered_map<int, int> idMap;
     vector<int> reverseMap;
-    vector<pair<int,int>> edges;
+    vector<pair<int, int>> edges;
 
     string line;
     int idx = 0;
 
+    // Read graph
     while (getline(in, line)) {
-        if (line.empty() || line[0] == '#') continue;
+        if (line.empty() || line[0] == '#')
+            continue;
 
         int u, v;
-        if (sscanf(line.c_str(), "%d %d", &u, &v) != 2) continue;
+        if (sscanf(line.c_str(), "%d %d", &u, &v) != 2)
+            continue;
 
         if (!idMap.count(u)) {
             idMap[u] = idx++;
             reverseMap.push_back(u);
         }
+
         if (!idMap.count(v)) {
             idMap[v] = idx++;
             reverseMap.push_back(v);
         }
 
-        edges.push_back({idMap[u], idMap[v]});
+        int um = idMap[u];
+        int vm = idMap[v];
+
+        edges.push_back({um, vm});
     }
 
     int n = idMap.size();
+
     vector<vector<int>> adj(n);
 
+    // UNDIRECTED graph
     for (auto &e : edges) {
-        int u = e.first, v = e.second;
+        int u = e.first;
+        int v = e.second;
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
 
-    cout << "Nodes: " << n << ", Edges: " << edges.size() << "\n";
+    cout << "Nodes: " << n << ", Edges: " << edges.size() << endl;
 
-    Result res = brandes(n, adj);
+    Structure result = betweennessCentrality(n, adj);
 
-    vector<pair<double,int>> order;
-    for (int i = 0; i < n; i++) order.push_back({res.BC[i], i});
+    vector<pair<double, int>> BC;
+    for (int i = 0; i < n; i++) {
+        BC.push_back({result.BC[i], i});
+    }
 
-    sort(order.rbegin(), order.rend());
+    sort(BC.rbegin(), BC.rend());
 
     cout << "\nTop 20 Nodes:\n";
     for (int i = 0; i < min(20, n); i++) {
-        cout << "Node " << reverseMap[order[i].second]
-             << " : " << order[i].first << "\n";
+        cout << "Node " << reverseMap[BC[i].second]
+             << " : " << BC[i].first << endl;
     }
 
-    cout << "\nExecution time: " << res.time << " sec\n";
-    cout << "Approx memory: " << res.approx_mem << " bytes\n";
+    cout << "\nExecution time: " << result.time << " sec\n";
+    cout << "Space: " << result.size << " bytes\n";
 
     return 0;
 }
