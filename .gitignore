@@ -1,0 +1,25 @@
+# Compiled binaries
+bc
+a.out
+
+# Object files
+*.o
+
+# Output files
+output_*.txt
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor / IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+*.tmp
+
+# Dataset files (optional - usually don’t push)
+email-Enron.txt
+wiki-Vote.txt
