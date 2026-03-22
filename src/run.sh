@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Compiling"
-g++ -O3 -march=native main.cpp -o bc
+g++ -o3 -march=native main.cpp -o bc
 
 echo "Running wiki-Vote"
 ./bc wiki-Vote.txt > output_wiki.txt
