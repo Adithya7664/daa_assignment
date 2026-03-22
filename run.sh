@@ -1,6 +1,6 @@
 #!bin/bash
 
-g++ -03 -march=native daa.cpp -o bc
+g++ -o3 -march=native daa.cpp -o bc
 
 echo "Output of Wiki-Vote dataset"
 ./bc Wiki-Vote.txt < WikiVoteoutput.txt
